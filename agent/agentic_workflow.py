@@ -38,6 +38,6 @@ class Graphbuilder():
         return self.graph
     
     def __call__(self):
-        pass
+        return self.build_graph()
 
 
