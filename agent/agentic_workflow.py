@@ -1,8 +1,8 @@
-from utils.model_loaders import Modelloader
-from tools.place_search import Placesearch
-from tools.weather_info import Weatherinfo
+from utils.model_loaders import ModelLoader
+from tools.place_search import PlaceSearchTool
+from tools.weather_info import WeatherInfoTool
 from tools.calculator import Calculator
-from tools.currency_conversion import Currencyconversion
+from tools.currency_conversion import CurrencyConverterTool
 from prompt_library.prompt import SYSTEM_PROMPT
 from langgraph.graph import StateGraph, MessagesState, END, START
 from langgraph.prebuilt import ToolNode, tools_condition
@@ -10,13 +10,13 @@ from langgraph.prebuilt import ToolNode, tools_condition
 
 class Graphbuilder():
     def __init__(self, model_provider: str  = "groq"):
-        self.model_loaders = Modelloader(model_provider=model_provider)
+        self.model_loaders = ModelLoader(model_provider=model_provider)
         self.llm = self.model_loaders.load_llm()
         self.tools = []        
-        self.weather_tools = Weatherinfo()
-        self.place_search_tools = Placesearch()
+        self.weather_tools = WeatherInfoTool()
+        self.place_search_tools = PlaceSearchTool()
         self.calculator_tools = Calculator()
-        self.currency_converter_tools = Currencyconversion()
+        self.currency_converter_tools = CurrencyConverterTool()
 
         self.tools.extend([* self.weather_tools.weather_tool_list,
                            * self.place_search_tools.place_search_tool_list,
@@ -44,7 +44,7 @@ class Graphbuilder():
         graph_builder.add_node("agent", self.agent_function)
         graph_builder.add_node("tools", ToolNode(tools=self.tools))
         graph_builder.add_edge(START, "agent")
-        graph_builder.add_conditonal_edges("agent", tools_condition)
+        graph_builder.add_conditional_edges("agent", tools_condition)
         graph_builder.add_edge("tools", "agent")
         graph_builder.add_edge("agent", END)
 

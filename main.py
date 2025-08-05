@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from agent.agentic_workflow import GraphBuilder
+from agent.agentic_workflow import Graphbuilder
 from utils.save_to_documents import save_document
 from starlette.responses import JSONResponse
 import os
@@ -18,7 +18,7 @@ class QueryRequest(BaseModel):
 async def query_travel_agent(query:QueryRequest):
     try:
         print(query)
-        graph = GraphBuilder(model_provider="groq")
+        graph = Graphbuilder(model_provider="groq")
         react_app=graph()
         #react_app = graph.build_graph()
 
